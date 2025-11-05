@@ -23,16 +23,16 @@ def upgrade() -> None:
     op.create_table(
         'posts',
         sa.Column('id', sa.Integer(), nullable=False, primary_key=True),
-        sa.Column('title', sa.String(), nullable=False)
+        sa.Column('title', sa.String(), nullable=False),
+        sa.Column('content', sa.String(), nullable=False),
+        sa.Column('published', sa.Boolean(), server_default='TRUE', nullable=False),
+        sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('NOW()'), nullable=False),
+        sa.Column('owner_id', sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ondelete='CASCADE')
     )
     pass
 
-# ,
-#         sa.Column('content', sa.String(), nullable=False),
-#         sa.Column('published', sa.Boolean(), server_default='TRUE', nullable=False),
-#         sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('NOW()'), nullable=False),
-#         sa.Column('owner_id', sa.Integer(), nullable=False),
-#         sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ondelete='CASCADE'),
+# 
 def downgrade() -> None:
     """Downgrade schema."""
     op.drop_table('posts')
